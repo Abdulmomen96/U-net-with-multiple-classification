@@ -69,7 +69,7 @@ myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_fo
 model = unet()
 model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)
 training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10, callbacks=[model_checkpoint])
-show_train_history(training, 'acc', 'loss')
+show_train_history(training, 'accuracy', 'loss')
 #####
 
 
