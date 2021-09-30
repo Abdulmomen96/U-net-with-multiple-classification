@@ -64,7 +64,7 @@ def show_train_history(train_history, train, loss, plt_save_name=plt_save_name):
 
 
 ##### training
-myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args, save_to_dir = None)
+myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args,flag_multi_class=False,save_to_dir = None)
 
 model = unet()
 model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)

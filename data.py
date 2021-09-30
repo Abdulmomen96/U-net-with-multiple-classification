@@ -11,16 +11,15 @@ np.set_printoptions(threshold=sys.maxsize, precision=5, suppress=True)
 
 arg = command_arguments()
 #########################configuration########################
-cat = [120,0,0]
-dog = [0,255,0]
+sperm = [120,0,0]
 Unlabelled = [0,0,0]
 
-COLOR_DICT = np.array([ cat, dog, Unlabelled])
-class_name = [ 'cat', 'dog', 'None']  # You must define by yourself
+COLOR_DICT = np.array([ sperm, Unlabelled])
+class_name = [ 'sperm', 'None']  # You must define by yourself
 
 color = 'grayscale'
 
-num_classes = 3 # include cat, dog and None.
+num_classes = 2
 num_of_test_img = arg.img_num
 
 test_img_size = 256 * 256
