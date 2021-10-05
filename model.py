@@ -130,9 +130,9 @@ def unet(pretrained_weights = None,input_size = img_size):
     conv9 = LeakyReLU(alpha=leakyrelu_alpha)(conv9)    
     #conv9 = Dropout(dr_rate)(conv9) ###
 
-    conv10 = Conv2D(1, 1, activation = 'softmax')(conv9) # I changed this from 3, 1 to 1, 1, which denotes the number of classes
+    conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9) # I changed this from 3, 1 to 1, 1, which denotes the number of classes
     model = Model(inputs = inputs, outputs = conv10)   
-    model.compile(optimizer = Adam(lr = learning_rate, decay = learning_decay_rate), loss = 'categorical_crossentropy', metrics = ['accuracy'])
+    model.compile(optimizer = Adam(lr = learning_rate, decay = learning_decay_rate), loss = 'binary_crossentropy', metrics = ['accuracy'])
     
     #model.summary()
 

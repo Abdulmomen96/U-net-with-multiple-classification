@@ -88,7 +88,7 @@ results = model.predict_generator(testGene, img_num, verbose=1)
 if not os.path.exists(save_result_folder):
     os.makedirs(save_result_folder)
 
-saveResult( save_result_folder, results)
+saveResult(save_result_folder, results)
 #####
 
 
