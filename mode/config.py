@@ -33,7 +33,7 @@ def command_arguments():
     parser.add_argument('--rotation_range', '-rot', default=180, help='rotation_range')
     parser.add_argument('--width_shift_range', '-wid', default=0.9, help='width_shift_range')
     parser.add_argument('--height_shift_range', '-hei', default=0.9, help='height_shift_range')
-    parser.add_argument('--zoom_range', '-zoo', default=0, help='zoom_range')
+    parser.add_argument('--zoom_range', '-zoo', default=0.5, help='zoom_range')
     parser.add_argument('--vertical_flip', '-ver', default=True, help='vertical_flip')
     parser.add_argument('--horizontal_flip', '-hor', default=True, help='horizontal_flip')
     parser.add_argument('--fill_mode', '-fil', default='constant', help='fill_mode')
