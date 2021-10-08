@@ -1,7 +1,7 @@
 import cv2
 from PIL import Image
 from glob import glob
-images = glob(r'C:\Users\USER\PycharmProjects\U-net-with-multiple-classification\data\sperms\train\*\sperm\*.png')
+images = glob(r'C:\Users\USER\Documents\MATLAB\set_14\images\*.png')
 
 for image in images:
     im = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
