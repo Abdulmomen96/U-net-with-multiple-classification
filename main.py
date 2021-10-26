@@ -28,77 +28,105 @@ plt_save_name = arg.plt_save_name
 val_plt_name = arg.val_plt_name
 img_num = arg.img_num
 filenum = arg.filenum
+trained_model = arg.trained_model
+
 
 #augs 
+if trained_model != True:
 
-rotation_range = arg.rotation_range
-width_shift_range = arg.width_shift_range
-height_shift_range = arg.height_shift_range
-zoom_range = arg.zoom_range
-horizontal_flip = arg.horizontal_flip
-fill_mode = arg.fill_mode
-
-
-data_gen_args = dict(
-                    featurewise_center=True,
-                    featurewise_std_normalization=True,
-                    rotation_range=rotation_range,
-                    width_shift_range=width_shift_range,
-                    height_shift_range=height_shift_range,
-                    #shear_range=0.05,
-                    #zoom_range=zoom_range,
-                    horizontal_flip=horizontal_flip,
-                    fill_mode=fill_mode,
-                    cval=0)
+    rotation_range = arg.rotation_range
+    width_shift_range = arg.width_shift_range
+    height_shift_range = arg.height_shift_range
+    zoom_range = arg.zoom_range
+    horizontal_flip = arg.horizontal_flip
+    fill_mode = arg.fill_mode
 
 
-#draw the training process of every epoch
-def show_train_history(train_history, train, loss, plt_save_name=plt_save_name):
-    plt.plot(train_history.history['accuracy'])
-    plt.plot(train_history.history['loss'])
-    plt.title('Train hist')
-    plt.ylabel(train)
-    plt.xlabel('Epoch')
-    plt.legend(['accuracy','loss'], loc='upper left')
-    plt.savefig(plt_save_name)
+    data_gen_args = dict(
+                        featurewise_center=True,
+                        featurewise_std_normalization=True,
+                        rotation_range=rotation_range,
+                        width_shift_range=width_shift_range,
+                        height_shift_range=height_shift_range,
+                        #shear_range=0.05,
+                        #zoom_range=zoom_range,
+                        horizontal_flip=horizontal_flip,
+                        fill_mode=fill_mode,
+                        cval=0)
 
 
-##### training
-myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args,flag_multi_class=False,save_to_dir = None)
-
-model = unet()
-model.summary()
-model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)
-training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10, callbacks=[model_checkpoint])
-show_train_history(training, 'accuracy', 'loss')
-#####
-
-
-##### inference
-model = load_model(model_name)
-testGene = testGenerator(test_img_path)
-#testGene_for_eval = testGenerator_for_evaluation(test_img_path)
-results = model.predict_generator(testGene, img_num, verbose=1)
-#loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
-#print("test loss:",loss,"  test accuracy:", acc)
-#####
+    #draw the training process of every epoch
+    def show_train_history(train_history, train, loss, plt_save_name=plt_save_name):
+        plt.plot(train_history.history['accuracy'])
+        plt.plot(train_history.history['loss'])
+        plt.title('Train hist')
+        plt.ylabel(train)
+        plt.xlabel('Epoch')
+        plt.legend(['accuracy','loss'], loc='upper left')
+        plt.savefig(plt_save_name)
 
 
-##### draw your inference results
-if not os.path.exists(save_result_folder):
-    os.makedirs(save_result_folder)
+    ##### training
+    myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args,flag_multi_class=False,save_to_dir = None)
 
-saveResult(save_result_folder, results, flag_multi_class=False)
-#####
+    model = unet()
+    model.summary()
+    model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)
+    training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10, callbacks=[model_checkpoint])
+    show_train_history(training, 'accuracy', 'loss')
+    #####
+    ##### inference
+    model = load_model(model_name)
+    testGene = testGenerator(test_img_path)
+    # testGene_for_eval = testGenerator_for_evaluation(test_img_path)
+    results = model.predict_generator(testGene, img_num, verbose=1)
+    # loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
+    # print("test loss:",loss,"  test accuracy:", acc)
+    #####
+
+    ##### draw your inference results
+    if not os.path.exists(save_result_folder):
+        os.makedirs(save_result_folder)
+
+    saveResult(save_result_folder, results, flag_multi_class=False)
+    #####
+
+    ##### Record every command params of your training
+    if (os.path.isfile(csvfilename) != True):
+        csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                   rotation_range)
+    else:
+        csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                   rotation_range)
+    #####
 
 
-##### Record every command params of your training
-if (os.path.isfile(csvfilename)!=True):
-    csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
 else:
-    csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
-#####
+    ##### inference
+    model = load_model(model_name)
+    testGene = testGenerator(test_img_path)
+    #testGene_for_eval = testGenerator_for_evaluation(test_img_path)
+    results = model.predict_generator(testGene, img_num, verbose=1)
+    #loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
+    #print("test loss:",loss,"  test accuracy:", acc)
+    #####
 
 
-K.clear_session()
+    ##### draw your inference results
+    if not os.path.exists(save_result_folder):
+        os.makedirs(save_result_folder)
+
+    saveResult(save_result_folder, results, flag_multi_class=False)
+    #####
+
+
+    ##### Record every command params of your training
+    if (os.path.isfile(csvfilename)!=True):
+        csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
+    else:
+        csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
+    #####
+
+
+    K.clear_session()
 
