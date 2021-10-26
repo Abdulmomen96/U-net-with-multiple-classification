@@ -32,7 +32,7 @@ trained_model = arg.trained_model
 
 
 #augs 
-if trained_model != True:
+if trained_model == 0:
 
     rotation_range = arg.rotation_range
     width_shift_range = arg.width_shift_range
