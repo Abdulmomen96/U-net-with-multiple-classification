@@ -135,7 +135,7 @@ def unet(pretrained_weights = None,input_size = img_size):
     
     #model.summary()
 '''
-def unet(pretrained_weights = None,input_size = (256,256,1)):
+def unet(pretrained_weights = None,input_size = img_size):
     inputs = Input(input_size)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)

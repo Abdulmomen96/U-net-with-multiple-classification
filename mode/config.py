@@ -20,7 +20,7 @@ def command_arguments():
     parser.add_argument('--img_num','-tm', default=27, type=int, help='test img num')
     parser.add_argument('--trained_model', '-tr', default=0, type=int, help='Trained Model (No training)')
     
-    save_result_folder = "./data/sperms/results/" % parser.parse_args().filenum
+    save_result_folder = "./data/sperms/results/%s_mrsu/" % parser.parse_args().filenum
     model_name = '%s_mrsu_lichi.hdf5' % parser.parse_args().filenum
     plt_save_name = '%s_fig_mrsu.png' % parser.parse_args().filenum
     val_plt_name = '%s_val.png' % parser.parse_args().filenum
