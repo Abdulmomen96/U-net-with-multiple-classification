@@ -29,19 +29,19 @@ val_plt_name = arg.val_plt_name
 img_num = arg.img_num
 filenum = arg.filenum
 trained_model = arg.trained_model
-video_inference = arg.video_inference
-
-
+video_in = arg.video_inference
+rotation_range = arg.rotation_range
+rotation_range = arg.rotation_range
+width_shift_range = arg.width_shift_range
+height_shift_range = arg.height_shift_range
+zoom_range = arg.zoom_range
+horizontal_flip = arg.horizontal_flip
+fill_mode = arg.fill_mode
 
 #augs 
 if trained_model == 0:
 
-    rotation_range = arg.rotation_range
-    width_shift_range = arg.width_shift_range
-    height_shift_range = arg.height_shift_range
-    zoom_range = arg.zoom_range
-    horizontal_flip = arg.horizontal_flip
-    fill_mode = arg.fill_mode
+
 
 
     data_gen_args = dict(
@@ -105,7 +105,7 @@ if trained_model == 0:
 
 else:
     ##### inference
-    if video_inference != 1:
+    if video_in != 1:
         model = load_model(model_name)
         testGene = testGenerator(test_img_path)
         #testGene_for_eval = testGenerator_for_evaluation(test_img_path)
