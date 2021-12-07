@@ -137,7 +137,9 @@ else:
         from glob import glob
         video_paths = glob('./data/sperms/test/video_results/*')
         vid_frames = []
+
         for video in video_paths:
+            print(video)
             file_name = video.split('/')[-1]
             cap = cv.VideoCapture(0)
             if not cap.isOpened():
@@ -177,15 +179,16 @@ else:
 
             cap.release()
             out.release()
+            print("Hi")
 
-            ##### Record every command params of your training
-            if (os.path.isfile(csvfilename) != True):
-                csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
-                           rotation_range)
-            else:
-                csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
-                           rotation_range)
-            #####
+    ##### Record every command params of your training
+    if (os.path.isfile(csvfilename) != True):
+        csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                   rotation_range)
+    else:
+        csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                   rotation_range)
+    #####
 
-            K.clear_session()
+    K.clear_session()
 
