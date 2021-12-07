@@ -191,8 +191,8 @@ else:
         vid_frames = []
 
         for video in video_paths:
-            print(video)
             file_name = video.split('/')[-1]
+            print(file_name)
             cap = cv.VideoCapture(0)
             if not cap.isOpened():
                 print("Cannot open camera")
