@@ -134,6 +134,7 @@ else:
         K.clear_session()
 
     else:
+        from glob import glob
         video_paths = glob('./data/sperms/test/video_results/*')
         vid_frames = []
         for video in video_paths:
