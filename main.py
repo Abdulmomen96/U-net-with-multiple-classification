@@ -105,7 +105,7 @@ if trained_model == 0:
 
 else:
     ##### inference
-    if video_in != 1:
+    if video_in == 0:
         model = load_model(model_name)
         testGene = testGenerator(test_img_path)
         #testGene_for_eval = testGenerator_for_evaluation(test_img_path)
@@ -159,7 +159,7 @@ else:
             cap.release()
             cv.destroyAllWindows()
             model = load_model(model_name)
-            testGene = testGenerator(vid_frames)
+            testGene = testGenerator_vid(vid_frames)
             # testGene_for_eval = testGenerator_for_evaluation(test_img_path)
             results = model.predict_generator(testGene, img_num, verbose=1)
             # loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
