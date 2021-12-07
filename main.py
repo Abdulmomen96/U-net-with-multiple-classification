@@ -187,6 +187,7 @@ else:
     else:
         from glob import glob
         video_paths = glob('./data/sperms/test/video_results/*')
+        print(video_paths)
         vid_frames = []
 
         for video in video_paths:
