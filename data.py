@@ -183,3 +183,24 @@ def saveResult(save_path,npyfile,flag_multi_class = True,num_class = num_classes
             io.imsave(os.path.join(save_path,"%d.png"%count),img)
         count += 1
 
+def testGenerator_vid(vid, target_size = img_size, flag_multi_class=False, as_gray=True):
+    for img in vid:
+        #img = img / 255.
+        img = trans.resize(img,target_size)
+        img = np.reshape(img,img.shape+(1,)) if (flag_multi_class) else img
+        img = np.reshape(img,(1,)+img.shape)
+        yield img
+
+def processResult_vid(npyfile,flag_multi_class = True,num_class = num_classes ):
+    count = 1
+    vid = []
+    for i,item in enumerate(npyfile):
+            img=item[:,:,0]
+            print(np.max(img),np.min(img))
+            img[img>0.5]=1
+            img[img<=0.5]=0
+            print(np.max(img),np.min(img))
+            img = img * 255.
+            vid.append(img)
+    count += 1
+    return vid

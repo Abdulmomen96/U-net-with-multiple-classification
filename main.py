@@ -11,7 +11,7 @@ from mode.config import *
 from csvrecord import * 
 from pathlib import Path
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
-
+import cv2 as cv
 arg = command_arguments()
 
 batch_size = arg.batchsize
@@ -29,6 +29,8 @@ val_plt_name = arg.val_plt_name
 img_num = arg.img_num
 filenum = arg.filenum
 trained_model = arg.trained_model
+video_inference = arg.video_inference
+
 
 
 #augs 
@@ -103,30 +105,86 @@ if trained_model == 0:
 
 else:
     ##### inference
-    model = load_model(model_name)
-    testGene = testGenerator(test_img_path)
-    #testGene_for_eval = testGenerator_for_evaluation(test_img_path)
-    results = model.predict_generator(testGene, img_num, verbose=1)
-    #loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
-    #print("test loss:",loss,"  test accuracy:", acc)
-    #####
+    if video_inference != 1:
+        model = load_model(model_name)
+        testGene = testGenerator(test_img_path)
+        #testGene_for_eval = testGenerator_for_evaluation(test_img_path)
+        results = model.predict_generator(testGene, img_num, verbose=1)
+        #loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
+        #print("test loss:",loss,"  test accuracy:", acc)
+        #####
 
 
-    ##### draw your inference results
-    if not os.path.exists(save_result_folder):
-        os.makedirs(save_result_folder)
+        ##### draw your inference results
+        if not os.path.exists(save_result_folder):
+            os.makedirs(save_result_folder)
 
-    saveResult(save_result_folder, results, flag_multi_class=False)
-    #####
+        saveResult(save_result_folder, results, flag_multi_class=False)
+        #####
 
 
-    ##### Record every command params of your training
-    if (os.path.isfile(csvfilename)!=True):
-        csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
+        ##### Record every command params of your training
+        if (os.path.isfile(csvfilename)!=True):
+            csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
+        else:
+            csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
+        #####
+
+
+        K.clear_session()
+
     else:
-        csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate, rotation_range)
-    #####
+        video_paths = glob('./data/sperms/test/video_results/*')
+        vid_frames = []
+        for video in video_paths:
+            file_name = video.split('/')[-1]
+            cap = cv.VideoCapture(0)
+            if not cap.isOpened():
+                print("Cannot open camera")
+                exit()
+            while True:
+                # Capture frame-by-frame
+                ret, frame = cap.read()
+                # if frame is read correctly ret is True
+                if not ret:
+                    print("Can't receive frame (stream end?). Exiting ...")
+                    break
+                # Our operations on the frame come here
+                gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+                vid_frames.append(gray)
+            # When everything done, release the capture
+            cap.release()
+            cv.destroyAllWindows()
+            model = load_model(model_name)
+            testGene = testGenerator(vid_frames)
+            # testGene_for_eval = testGenerator_for_evaluation(test_img_path)
+            results = model.predict_generator(testGene, img_num, verbose=1)
+            # loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
+            # print("test loss:",loss,"  test accuracy:", acc)
+            #####
 
+            ##### draw your inference results
+            if not os.path.exists(save_result_folder):
+                os.makedirs(save_result_folder)
 
-    K.clear_session()
+            out_vid = processResult_vid(results, flag_multi_class=False)
+            fourcc = cv.VideoWriter_fourcc(*'XVID')
+            results_path = './data/sperms/test/video_results/'
+            out = cv.VideoWriter(results_path+file_name, fourcc, 20.0, (640, 480))
+            for frame in out_vid:
+                out.write(frame)
+
+            cap.release()
+            out.release()
+
+            ##### Record every command params of your training
+            if (os.path.isfile(csvfilename) != True):
+                csv_create(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                           rotation_range)
+            else:
+                csv_append(csvfilename, filenum, batch_size, steps_per_epoch, epochs, learning_rate, learning_decay_rate,
+                           rotation_range)
+            #####
+
+            K.clear_session()
 

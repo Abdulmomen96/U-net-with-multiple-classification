@@ -19,6 +19,8 @@ def command_arguments():
     parser.add_argument('--test_img_path','-tip',default="./data/sperms/test/", help='test_img_path')
     parser.add_argument('--img_num','-tm', default=27, type=int, help='test img num')
     parser.add_argument('--trained_model', '-tr', default=0, type=int, help='Trained Model (No training)')
+    parser.add_argument('--video_inference', '-vd', default=0, type=int, help='Video')
+
     
     save_result_folder = "./data/sperms/results/%s_mrsu/" % parser.parse_args().filenum
     model_name = '%s_mrsu_lichi.hdf5' % parser.parse_args().filenum
