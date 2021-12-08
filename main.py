@@ -229,7 +229,8 @@ else:
             # fourcc = cv.VideoWriter_fourcc(*'XVID')
             results_path = './data/sperms/test/video_results/'
             out = cv.VideoWriter(results_path + file_name, cv.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (256, 256))
-            for frame in out_vid:
+            for frame,image_i in zip(out_vid, range(len(out_vid))):
+                cv.imwrite(results_path+str(image_i)+'.png', frame)
                 frame = np.uint8(frame)
                 out.write(frame)
 
