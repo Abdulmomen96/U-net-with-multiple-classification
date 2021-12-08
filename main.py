@@ -190,7 +190,7 @@ else:
         video_paths = glob('./data/sperms/test/videos/*')
         print(video_paths)
 
-        for video, _ in zip(video_paths, range(1)):
+        for video, _ in zip(video_paths, range(len(video_paths))):
             vid_frames = []
             print(video)
             file_name = video.split('/')[-1]
@@ -215,6 +215,8 @@ else:
             testGene = testGenerator_vid(vid_frames)
             # testGene_for_eval = testGenerator_for_evaluation(test_img_path)
             img_num = len(vid_frames)
+            if img_num > 40 or img_num < 15:
+              continue
             results = model.predict_generator(testGene, img_num, verbose=1)
             # loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
             # print("test loss:",loss,"  test accuracy:", acc)
@@ -233,6 +235,7 @@ else:
                 cv.imwrite(results_path+str(image_i)+'.png', frame)
                 frame = np.uint8(frame)
                 out.write(frame)
+            break
 
             cap.release()
             out.release()
