@@ -57,6 +57,7 @@ for img in sequence:
     frames.append(np.array(start))
     cv2.imshow('image', start)
     cv2.waitKey(0)
+cv2.imwrite('result.png', start)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 out = cv2.VideoWriter('result.avi', fourcc, 70, (640, 480))
 for image in frames:
