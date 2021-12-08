@@ -5,13 +5,14 @@ from data import *
 from keras.models import load_model
 from keras.callbacks import History
 import tensorflow as tf
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from keras import backend as K
 from mode.config import *
-from csvrecord import * 
+from csvrecord import *
 from pathlib import Path
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
 import cv2 as cv
+
 arg = command_arguments()
 
 batch_size = arg.batchsize
@@ -38,43 +39,42 @@ zoom_range = arg.zoom_range
 horizontal_flip = arg.horizontal_flip
 fill_mode = arg.fill_mode
 
-#augs 
+# augs
 if trained_model == 0:
 
-
-
-
     data_gen_args = dict(
-                        featurewise_center=True,
-                        featurewise_std_normalization=True,
-                        rotation_range=rotation_range,
-                        width_shift_range=width_shift_range,
-                        height_shift_range=height_shift_range,
-                        #shear_range=0.05,
-                        #zoom_range=zoom_range,
-                        horizontal_flip=horizontal_flip,
-                        fill_mode=fill_mode,
-                        cval=0)
+        featurewise_center=True,
+        featurewise_std_normalization=True,
+        rotation_range=rotation_range,
+        width_shift_range=width_shift_range,
+        height_shift_range=height_shift_range,
+        # shear_range=0.05,
+        # zoom_range=zoom_range,
+        horizontal_flip=horizontal_flip,
+        fill_mode=fill_mode,
+        cval=0)
 
 
-    #draw the training process of every epoch
+    # draw the training process of every epoch
     def show_train_history(train_history, train, loss, plt_save_name=plt_save_name):
         plt.plot(train_history.history['accuracy'])
         plt.plot(train_history.history['loss'])
         plt.title('Train hist')
         plt.ylabel(train)
         plt.xlabel('Epoch')
-        plt.legend(['accuracy','loss'], loc='upper left')
+        plt.legend(['accuracy', 'loss'], loc='upper left')
         plt.savefig(plt_save_name)
 
 
     ##### training
-    myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args,flag_multi_class=False,save_to_dir = None)
+    myGene = trainGenerator(batch_size, train_path, train_img_folder, train_label_folder, data_gen_args,
+                            flag_multi_class=False, save_to_dir=None)
 
     model = unet()
     model.summary()
-    model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)
-    training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10, callbacks=[model_checkpoint])
+    model_checkpoint = ModelCheckpoint(model_name, monitor='loss', verbose=1, save_best_only=True)
+    training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10,
+                                   callbacks=[model_checkpoint])
     show_train_history(training, 'accuracy', 'loss')
     #####
     ##### inference
@@ -134,7 +134,7 @@ else:
 
 
         K.clear_session()
-        
+
         '''
         from glob import glob
 
@@ -144,7 +144,7 @@ else:
         for video in video_paths:
             print(video)
             file_name = video.split('/')[-1]
-            cap = cv.VideoCapture(0)
+            cap = cv.VideoCapture(-1)
             if not cap.isOpened():
                 print("Cannot open camera")
                 exit()
@@ -186,14 +186,15 @@ else:
 
     else:
         from glob import glob
+
         video_paths = glob('./data/sperms/test/videos/*')
         print(video_paths)
-        vid_frames = []
 
         for video in video_paths:
+            vid_frames = []
+            print(video)
             file_name = video.split('/')[-1]
-            print(file_name)
-            cap = cv.VideoCapture(0)
+            cap = cv.VideoCapture(video)
             if not cap.isOpened():
                 print("Cannot open camera")
                 exit()
@@ -213,6 +214,7 @@ else:
             model = load_model(model_name)
             testGene = testGenerator_vid(vid_frames)
             # testGene_for_eval = testGenerator_for_evaluation(test_img_path)
+            img_num = len(vid_frames)
             results = model.predict_generator(testGene, img_num, verbose=1)
             # loss, acc = model.evaluate_generator(testGene_for_eval, steps=img_num, verbose=1)
             # print("test loss:",loss,"  test accuracy:", acc)
@@ -225,7 +227,7 @@ else:
             out_vid = processResult_vid(results, flag_multi_class=False)
             fourcc = cv.VideoWriter_fourcc(*'XVID')
             results_path = './data/sperms/test/video_results/'
-            out = cv.VideoWriter(results_path+file_name, fourcc, 20.0, (640, 480))
+            out = cv.VideoWriter(results_path + file_name, fourcc, 20.0, (640, 480))
             for frame in out_vid:
                 out.write(frame)
 
