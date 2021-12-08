@@ -1,6 +1,7 @@
 import cv2
 from glob import glob
 import numpy as np
+from PIL import Image
 def get_num(s):
   if 'txt' in s:
     return 1000
@@ -11,7 +12,7 @@ sequence.sort(key=lambda s: get_num(s))
 
 start = np.zeros((256, 256, 3))
 
-
+frames = []
 for img in sequence:
     temp = np.zeros((256, 256, 3))
     img = cv2.imread(img)
@@ -51,6 +52,15 @@ for img in sequence:
         cv2.circle(temp, (x, y), 1, cross_color, 2)
         #cv2.line(img, (x - line_length, y), (x + line_length, y), cross_color, 2)
         #cv2.line(img, (x, y - line_length), (x, y + line_length), cross_color, 2)
+
     start = (temp + start) % 256
+    frames.append(np.array(start))
     cv2.imshow('image', start)
     cv2.waitKey(0)
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('result.avi', fourcc, 70, (640, 480))
+for image in frames:
+    frame = cv2.resize(image, (640, 480))
+    out.write(frame)
+
+out.release()
