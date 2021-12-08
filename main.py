@@ -190,7 +190,7 @@ else:
         video_paths = glob('./data/sperms/test/videos/*')
         print(video_paths)
 
-        for video in video_paths:
+        for video, _ in zip(video_paths, range(1)):
             vid_frames = []
             print(video)
             file_name = video.split('/')[-1]
@@ -225,10 +225,12 @@ else:
                 os.makedirs(save_result_folder)
 
             out_vid = processResult_vid(results, flag_multi_class=False)
-            fourcc = cv.VideoWriter_fourcc(*'XVID')
+            print(len(out_vid))
+            # fourcc = cv.VideoWriter_fourcc(*'XVID')
             results_path = './data/sperms/test/video_results/'
-            out = cv.VideoWriter(results_path + file_name, fourcc, 20.0, (640, 480))
+            out = cv.VideoWriter(results_path + file_name, cv.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (256, 256))
             for frame in out_vid:
+                frame = np.uint8(frame)
                 out.write(frame)
 
             cap.release()
