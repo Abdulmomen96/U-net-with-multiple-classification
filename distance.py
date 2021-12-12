@@ -6,7 +6,7 @@ def get_num(s):
   if 'txt' in s:
     return 1000
   return int(s.replace('\\', '.').split('.')[-2])
-sequence = glob('./data/sperms/test/Video_results/*.png')
+sequence = glob('./data/sperms/test/video_results/*.png')
 print(sequence)
 sequence.sort(key=lambda s: get_num(s))
 
