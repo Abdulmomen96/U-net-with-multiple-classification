@@ -8,7 +8,7 @@ python3 main.py -n 001 -lr 0.00004 -ldr 0.000008 -b 16 -s 60 -e 80 -tr 0
 -b   = batch size  
 -s   = steps  
 -e   = epochs
--tr  = training 0, testing 1
+-tm= training 0, testing 1
 (check more params in mode/config.py)
 
 --------------------------------------------------------------------------------
