@@ -1,14 +1,14 @@
 
 ```
-python3 main.py -n 001 -lr 0.00004 -ldr 0.000008 -b 16 -s 60 -e 80
-```
 
--n   = A number helps save different .h5 and directories of infered images.  
+python3 main.py -n 001 -lr 0.00004 -ldr 0.000008 -b 16 -s 60 -e 80 -tr 0
+```
 -lr  = learning rate  
 -ldr = learning decay rate  
 -b   = batch size  
 -s   = steps  
--e   = epochs  
+-e   = epochs
+-tr  = training 0, testing 1
 (check more params in mode/config.py)
 
 --------------------------------------------------------------------------------
@@ -17,57 +17,63 @@ python3 main.py -n 001 -lr 0.00004 -ldr 0.000008 -b 16 -s 60 -e 80
 ### You have to know:
 The structure of this project is:
 
-/data/catndog : my sample collection of cat and dog with the [required catalog](https://gist.github.com/fchollet/0830affa1f7f19fd47b06d4cf89ed44d). 
+/data/sperms/train/image/sperm : The data of the training images image_0.png in this naming format.
+/data/sperms/train/label/sperm/ : The data of the training labels or Masks image_0.png in this naming format.
+
+/data/sperms/test/sperm/ : Testing images named from 1 to n where n is passed with other arguments or passed as 27 by default.,
+
+/data/sperms/result/ : Results directory to save the genrated images from the network in the testing.
+
+incase there are more than one label are introduce i.e, sperm, nonsperm, there should be a new directory with that label with the dataset similar to the sperm
 
 All you have see are defined as below:
 * data.py : prepare the related images you want to train and predict.
 * model.py : define the U-net structure
 * main.py : run the program
 
+Supplementry files
+gray_2_rgb.py
+jpg_to_png.py
+              The first two files, as the names sugest, they are used to preprocess the images, it really depends on how you prepared your dataset,
+              For the training you need a png grayscale images.
+rename_shift.py
+renaming_gt_labels.py
+renaming_test_images.py
+              These files are used to rename the training and testing images/labels, in an accptible way as stated above.
 
 ### data.py
+This file is responsible for the preprocessing of the dataset, using the following functions:
+adjustData() normalize the training images and the labels, and also maps the label colored image into a multi-layer depending on the number of labels. Since we only used only  one label it's ok to use gray images. 
 
-My original size of images is 512x512. However, they'll be resized to 256x256 for U-net architecture defined in model.py. I collect the sample images of cats and dogs from internet. You can find my sample data in /data/catndog/. However, /catndog/ just show how to put your data. You can prepare your data by your own.
+trainGenerator(), testGenerator()  generates the training and testing dataset, and also accepts some paramters which controls the data augmentation in order to increase the dataset size.
 
-My modifications are summerized below:
 
-* in def trainGenerator(), at first, comment "classes". Second, set the target directories as train_path+"image" in image_datagen.flow_from_directory() and train_path+"label" in mask_datagen.flow_from_directory(). Keras will detect the classes from your training data automatically.
+saveResult() converts the resulted array from the model into images and saves the results into the result folder /data/sperms/result/
 
-* Let all the "flag_multi_class = True"
-
-* in def adjustdata(), reshape the mask with (batch_size, width, height, classes). Every channel in fourth dimemsion corresponds to a certain class with one-hot format. This repo only written for 3 classes(cat, dog, background).
-
-* in labelVsiualize(), pick up the max value in one-hot vector and draw the corresponding colors to every gnenerated all-zero array. You can define the color in clolor_dict.
 
 ### model.py
 
-All the U-net architecture is defined in model.py .
+All the U-net architecture is defined in model.py.
 
 
 ### main.py
 
-Training and test steps are defined in main.py .
+Training and test steps are defined in main.py, whcih are selected by passing the tr argument when running main.py file.
 
 
-### My dependencies
+
+
+
+
+### dependencies
 
 * Tensorflow : 1.4.0
 * Keras >= 1.0
 * Python 3.5.2
-* cuda 8.0 (for my Nvidia GTX980ti)
 
 
-(it's optional, but I recommend that):
-
-* docker 18.09.5
-
-
-
-If there is any other suggestion, do not hesitate to tell me.
-
-
-
-
-
-The orinigal thesis：[U-Net: Convolutional Networks for Biomedical Image Segmentation](http://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/). 
+ 
+Preparing the dataset:
+To prepare the dataset we used image labeler tool. However, the output of the image labeler tool can't be used directly since the labels are mapped from 1 to 255, which makes them look blank in case of using a small number of labels. We used exporting_images.m to solve this.
+  
 
