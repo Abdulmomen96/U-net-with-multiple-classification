@@ -9,7 +9,9 @@ python3 main.py -n 001 -lr 0.00004 -ldr 0.000008 -b 16 -s 60 -e 80 -tr 0
 -s   = steps  
 -e   = epochs
 -tr = training 0, testing 1
+-vd = videos input (For motility)
 (check more params in mode/config.py)
+
 
 --------------------------------------------------------------------------------
 
@@ -61,10 +63,6 @@ All the U-net architecture is defined in model.py.
 Training and test steps are defined in main.py, whcih are selected by passing the tr argument when running main.py file.
 
 
-
-
-
-
 ### dependencies
 
 * Tensorflow : 1.4.0
@@ -75,5 +73,11 @@ Training and test steps are defined in main.py, whcih are selected by passing th
  
 Preparing the dataset:
 To prepare the dataset we used image labeler tool. However, the output of the image labeler tool can't be used directly since the labels are mapped from 1 to 255, which makes them look blank in case of using a small number of labels. We used exporting_images.m to solve this.
+
+
+For motility, the saved model for concentration is used for the testing. the viedos are stored in the test directory, and fed to the model to generate the output images.
+To commine the output images of the sperms and draw the path traveled by each sperm we run the distance.py file. This file filters and smoothes the highlited sperm shapes in the ouput images and then combines then into single image to draw paths for each spearm.
+
+For working with the code please watch the attatched video.
   
 
