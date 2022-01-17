@@ -1,7 +1,10 @@
 import os
 from glob import glob
+from scipy.stats import norm
+import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+from load_correct_labels import *
 masks = glob(r'.\data\sperms\result\*.png')
 images = glob(r'.\data\sperms\test\*.png')
 destination = r'.\data\sperms\result\\'
@@ -11,6 +14,9 @@ mask_dict = {}
 labels_dict = {}
 masked_dict = {}
 print(len(images))
+data = red_csv('counts.csv')
+true = []
+model_output = []
 for image, mask, num in zip(images, masks, range(len(images))):
     original_image = cv2.imread(image)
     mask_image = cv2.imread(mask, cv2.IMREAD_GRAYSCALE)
@@ -60,8 +66,36 @@ for image, mask, num in zip(images, masks, range(len(images))):
     markers = cv2.watershed(original_image, markers)
     original_image[markers == -1] = [255, 0, 0]
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
-    cv2.putText(original_image, 'concentration: ' + str(count), (10, 450), font, 1, (0, 0, 255), 1, cv2.LINE_AA)
-    cv2.imshow('', original_image)
+    #cv2.putText(original_image, 'concentration: ' + str(count), (10, 450), font, 1, (0, 0, 255), 1, cv2.LINE_AA)
+    #cv2.imshow('', original_image)
     print(count)
     #cv2.wait
-    cv2.imwrite(destination +'masked_image_'+ str(num + 1) + '.png', original_image)
+    #cv2.imwrite(destination +'masked_image_'+ str(num + 1) + '.png', original_image)
+    image_name = 'masked_image_'+ str(num + 1) + '.png'
+    model_output.append(int(count))
+    true.append(int(data[image_name]))
+    #print(data[image_name], str(count))
+
+model_output = np.array(model_output)
+true = np.array(true)
+abs_error = np.abs(np.subtract(model_output, true))
+errors = np.divide(abs_error, true + 0.01) * 100
+
+
+errors = np.sort(errors)
+#errors = np.round(errors)
+print(errors)
+plt.plot(errors,  'r-')
+plt.show()
+cv2.waitKey(0)
+model1 = norm.cdf(errors)
+plt.plot(errors, model1,  'r-')
+plt.xlim([0, 10])
+plt.legend()
+plt.title("CDF of Percentage Error")
+plt.xlabel('Percentage Error e%')
+plt.ylabel('CDF(e)')
+plt.grid()
+plt.show()
+cv2.waitKey(0)
+

@@ -65,7 +65,9 @@ cv2.imshow('image', start)
 cv2.waitKey(0)
 cv2.imshow('image', start - first_image)
 cv2.waitKey(0)
-cv2.imwrite('result.png', start)
+#start = np.heaviside(sta
+#start = (1 - start / np.max(start)) * 255
+cv2.imwrite('result.png', start * 255)
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 out = cv2.VideoWriter('result.avi', fourcc, 70, (640, 480))
 for image in frames:
@@ -79,6 +81,7 @@ start = np.ubyte((start / np.max(start)) * 255)
 
 #start = cv2.cvtColor(start, cv2.COLOR_RGB2GRAY)
 cv2.imshow('thresh', start)
+cv2.imwrite('result.png', start)
 cv2.waitKey(0)
 original_image = start
 mask_image = start
