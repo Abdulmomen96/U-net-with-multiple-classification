@@ -72,6 +72,8 @@ if trained_model == 0:
     model = unet()
     model.summary()
     model_checkpoint = ModelCheckpoint(model_name, monitor='loss',verbose=1, save_best_only=True)
+    if os.path.exists('./1_mrsu_lichi.hdf5'):
+        model = load_model(model_name)
     training = model.fit_generator(myGene, steps_per_epoch=steps_per_epoch, epochs=epochs, validation_steps=10, callbacks=[model_checkpoint])
     show_train_history(training, 'accuracy', 'loss')
     #####

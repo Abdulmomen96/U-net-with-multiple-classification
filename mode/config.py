@@ -17,7 +17,7 @@ def command_arguments():
     parser.add_argument('--train_img_folder','-tif', default='image', help='train_img_folder')
     parser.add_argument('--train_label_folder','-tlf', default='label', help='train_label_folder')
     parser.add_argument('--test_img_path','-tip',default="./data/sperms/test/", help='test_img_path')
-    parser.add_argument('--img_num','-tm', default=27, type=int, help='test img num')
+    parser.add_argument('--img_num','-tm', default=100, type=int, help='test img num')
     parser.add_argument('--trained_model', '-tr', default=0, type=int, help='Trained Model (No training)')
     
     save_result_folder = "./data/sperms/results/%s_mrsu/" % parser.parse_args().filenum
